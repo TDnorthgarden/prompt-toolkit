@@ -1,7 +1,7 @@
 mod commands;
 
 use clap::Parser;
-use {ps::Ps};
+use ps::Ps;
 
 
 #[derive(Parser, Debug)]
@@ -11,26 +11,38 @@ struct Opts {
     subcmd: Subcommand,
 }
 
+// #[derive(Parser, Debug)]
+// pub enum StandardCmd {
+//     // Create(Create),
+//     // Start(Start),
+//     // State(State),
+//     // Kill(Kill),
+//     // Delete(Delete),
+// }
+
+use commands::ps;
 #[derive(Parser, Debug)]
-struct Subcommand {
-    #[clap(flatten)]
-    Standard(StandardCmd),
-    //  后续实现
-    // Common(),
-    // Extern(),
+pub enum CommonCmd {
+    Ps(Ps),
 }
 
 #[derive(Parser, Debug)]
-pub enum StandardCmd {
-    Ps(Ps)
+enum  Subcommand {
+    // #[clap(flatten)]
+    // Standard(StandardCmd),
+    //  后续实现
+    #[clap(flatten)]
+    Common(CommonCmd),
+    // Extern(),
 }
+
 
 
 fn main() {
     let opts = Opts::parse();
     match opts.subcmd {
-        Subcommand::Standard(cmd) => match cmd {
-            StandardCmd::Ps(ps) => commands::ps::ps(ps)
+        Subcommand::Common(cmd) => match cmd {
+            CommonCmd::Ps(ps) =>  commands::ps::ps(ps)
         }
     }
 }
